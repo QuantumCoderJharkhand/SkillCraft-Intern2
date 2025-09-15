@@ -1,67 +1,146 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const message = document.getElementById('message');
+  const restartBtn = document.getElementById('restartBtn');
+  const pvpBtn = document.getElementById('pvpBtn');
+  const aiBtn = document.getElementById('aiBtn');
+
+  let currentPlayer = 'x';
+  let isGameOver = false;
+  let isAgainstAI = false;
+
+  const WINNING_COMBINATIONS = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+    [0, 4, 8], [2, 4, 6]
+  ];
+
+  function startGame() {
+    isGameOver = false;
+    currentPlayer = 'x';
+    message.textContent = '';
+
+    // reset cells visually
     const cells = document.querySelectorAll('[data-cell]');
-    const board = document.getElementById('board');
-    const message = document.getElementById('message');
-    const restartBtn = document.getElementById('restartBtn');
+    cells.forEach(cell => {
+      cell.classList.remove('x', 'o');
+      cell.textContent = '';
+    });
 
-    let currentPlayer = 'x';
-    let isGameOver = false;
+    // bind click handlers fresh (use once:true so a clicked cell won't be clickable again)
+    bindCellListeners();
+  }
 
-    const WINNING_COMBINATIONS = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-        [0, 4, 8], [2, 4, 6]             // Diagonals
-    ];
+  function bindCellListeners() {
+    const cells = document.querySelectorAll('[data-cell]');
+    // remove any previous listeners by setting onclick to null (safe)
+    cells.forEach(cell => {
+      cell.onclick = null;
+      try { cell.removeEventListener('click', handleClick); } catch (e) {}
+      cell.addEventListener('click', handleClick, { once: true });
+    });
+  }
 
-    function startGame() {
-        isGameOver = false;
-        message.textContent = '';
-        currentPlayer = 'x';
+  function handleClick(e) {
+    if (isGameOver) return;
+    const cell = e.target;
+    if (cell.classList.contains('x') || cell.classList.contains('o')) return;
 
-        cells.forEach(cell => {
-            cell.classList.remove('x', 'o');
-            cell.textContent = '';
-            cell.removeEventListener('click', handleClick);
-            cell.addEventListener('click', handleClick, { once: true });
-        });
+    playMove(cell, currentPlayer);
+
+    if (checkWin(currentPlayer)) {
+      endGame(`${currentPlayer.toUpperCase()} Wins!`);
+      return;
     }
 
-    function handleClick(e) {
-        const cell = e.target;
-        if (isGameOver || cell.classList.contains('x') || cell.classList.contains('o')) return;
-
-        cell.classList.add(currentPlayer);
-        cell.textContent = currentPlayer.toUpperCase();
-
-        if (checkWin(currentPlayer)) {
-            endGame(`${currentPlayer.toUpperCase()} Wins!`);
-        } else if (isDraw()) {
-            endGame("It's a Draw!");
-        } else {
-            currentPlayer = currentPlayer === 'x' ? 'o' : 'x';
-        }
+    if (isDraw()) {
+      endGame("It's a Draw!");
+      return;
     }
 
-    function checkWin(player) {
-        return WINNING_COMBINATIONS.some(combo => {
-            return combo.every(index => {
-                return cells[index].classList.contains(player);
-            });
-        });
+    // switch player
+    currentPlayer = currentPlayer === 'x' ? 'o' : 'x';
+
+    // if AI mode and now O's turn, let AI play
+    if (isAgainstAI && currentPlayer === 'o') {
+      setTimeout(() => {
+        aiMove();
+      }, 350);
+    }
+  }
+
+  function playMove(cell, player) {
+    if (cell.classList.contains('x') || cell.classList.contains('o')) return;
+    cell.classList.add(player);
+    cell.textContent = player.toUpperCase();
+  }
+
+  function aiMove() {
+    if (isGameOver) return;
+    const cells = Array.from(document.querySelectorAll('[data-cell]'));
+    const empty = cells.filter(c => !c.classList.contains('x') && !c.classList.contains('o'));
+    if (empty.length === 0) return;
+
+    const choice = empty[Math.floor(Math.random() * empty.length)];
+    playMove(choice, 'o');
+
+    if (checkWin('o')) {
+      endGame("O Wins!");
+      return;
     }
 
-    function isDraw() {
-        return [...cells].every(cell => {
-            return cell.classList.contains('x') || cell.classList.contains('o');
-        });
+    if (isDraw()) {
+      endGame("It's a Draw!");
+      return;
     }
 
-    function endGame(msg) {
-        isGameOver = true;
-        message.textContent = msg;
-    }
+    currentPlayer = 'x';
+  }
 
-    restartBtn.addEventListener('click', startGame);
+  function checkWin(player) {
+    const cells = document.querySelectorAll('[data-cell]');
+    return WINNING_COMBINATIONS.some(combo => {
+      return combo.every(index => cells[index].classList.contains(player));
+    });
+  }
 
+  function isDraw() {
+    const cells = document.querySelectorAll('[data-cell]');
+    return Array.from(cells).every(cell => cell.classList.contains('x') || cell.classList.contains('o'));
+  }
+
+  function endGame(msg) {
+    isGameOver = true;
+    message.textContent = msg;
+
+    // remove remaining click listeners to be safe
+    const cells = document.querySelectorAll('[data-cell]');
+    cells.forEach(cell => {
+      try { cell.removeEventListener('click', handleClick); } catch (e) {}
+    });
+  }
+
+  // UI bindings
+  restartBtn.addEventListener('click', (e) => {
+    e.preventDefault();
     startGame();
+  });
+
+  pvpBtn.addEventListener('click', () => {
+    isAgainstAI = false;
+    pvpBtn.classList.add('active');
+    aiBtn.classList.remove('active');
+    startGame();
+  });
+
+  aiBtn.addEventListener('click', () => {
+    isAgainstAI = true;
+    aiBtn.classList.add('active');
+    pvpBtn.classList.remove('active');
+    startGame();
+  });
+
+  // default
+  pvpBtn.classList.add('active');
+  startGame();
 });
+
