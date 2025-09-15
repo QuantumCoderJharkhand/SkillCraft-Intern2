@@ -36,6 +36,7 @@ body {
     padding: 30px;
     border-radius: 16px;
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    width: max-content;
 }
 
 h1 {
@@ -68,6 +69,7 @@ h1 {
     cursor: pointer;
     transition: all 0.3s ease;
     border-radius: 8px;
+    user-select: none;
 }
 
 .cell:hover {
@@ -84,8 +86,9 @@ h1 {
 }
 
 .message {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     margin-bottom: 15px;
+    min-height: 1.5em;
     background: linear-gradient(90deg, red, yellow, green, cyan, blue, violet);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -104,7 +107,7 @@ button {
 }
 
 button:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 @keyframes rainbowText {
@@ -115,4 +118,31 @@ button:hover {
     100% {
         background-position: 100%;
     }
+}
+
+/* Mode buttons */
+.mode-buttons {
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.mode-buttons button {
+  padding: 8px 15px;
+  font-size: 0.9rem;
+  background: linear-gradient(45deg, #ff4081, #40c4ff);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.mode-buttons button:hover {
+  transform: scale(1.05);
+}
+
+.mode-buttons button.active {
+  box-shadow: 0 0 10px white;
 }
