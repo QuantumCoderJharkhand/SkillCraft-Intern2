@@ -1,32 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tic Tac Toe 🌈</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tic Tac Toe 🌈</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-    <div class="container">
-        <h1>Tic Tac Toe 🌈</h1>
-        <div class="board" id="board">
-            <!-- 9 cells -->
-            <div class="cell" data-cell></div>
-            <div class="cell" data-cell></div>
-            <div class="cell" data-cell></div>
-            <div class="cell" data-cell></div>
-            <div class="cell" data-cell></div>
-            <div class="cell" data-cell></div>
-            <div class="cell" data-cell></div>
-            <div class="cell" data-cell></div>
-            <div class="cell" data-cell></div>
-        </div>
-        <div class="message" id="message"></div>
-        <button id="restartBtn">Restart</button>
-    </div>
-    <script src="script.js"></script>
-</body>
+  <div class="container">
+    <h1>Tic Tac Toe 🌈</h1>
 
+    <!-- Mode buttons -->
+    <div class="mode-buttons">
+      <button id="pvpBtn" type="button">Player vs Player</button>
+      <button id="aiBtn" type="button">Player vs Computer</button>
+    </div>
+
+    <div class="board" id="board">
+      <div class="cell" data-cell></div>
+      <div class="cell" data-cell></div>
+      <div class="cell" data-cell></div>
+      <div class="cell" data-cell></div>
+      <div class="cell" data-cell></div>
+      <div class="cell" data-cell></div>
+      <div class="cell" data-cell></div>
+      <div class="cell" data-cell></div>
+      <div class="cell" data-cell></div>
+    </div>
+
+    <div class="message" id="message"></div>
+    <button id="restartBtn" type="button">Restart</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
 </html>
