@@ -16,6 +16,12 @@ It includes **Player vs Player** and **Player vs Computer (AI)** modes with smoo
 
 ---
 
+## 📂 Project Structure
+index.html # Main HTML file
+style.css # Stylesheet
+script.js # JavaScript functionality
+
+
 
 - ## 🛠️ Technologies Used
 
